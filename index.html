@@ -5,31 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>WebHub | MM Times</title>
 
+<!-- Three.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <style>
-    body {
+    body, html {
         margin: 0;
         padding: 0;
+        height: 100%;
+        overflow: hidden;
         font-family: "Poppins", sans-serif;
-        background: #f8f9fc;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
+        background: #000;
+    }
+
+    /* Overlay content */
+    .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 90%;
+        max-width: 600px;
+        transform: translate(-50%, -50%);
         text-align: center;
-        color: #333;
+        color: #fff;
+        z-index: 10;
+        padding: 20px;
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
         margin-bottom: 10px;
     }
 
     p {
         font-size: 1rem;
-        max-width: 600px;
-        margin: 10px auto 25px;
-        color: #555;
+        margin-bottom: 30px;
+        color: #e6e6e6;
     }
 
     .btn-container {
@@ -47,7 +58,7 @@
         border-radius: 8px;
         font-size: 1rem;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         transition: 0.2s;
     }
 
@@ -57,31 +68,74 @@
     }
 
     footer {
-        margin-top: 30px;
-        font-size: 0.9rem;
-        color: #777;
+        margin-top: 25px;
+        font-size: 0.85rem;
+        color: #ccc;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
     }
 </style>
-
 </head>
+
 <body>
 
+<!-- CONTENT -->
+<div class="content">
     <h1>Welcome to WebHub of MM Times</h1>
-
-    <p>
-        We are currently building this section.  
-        Meanwhile, you can explore our main website and check the logo & web services page.  
-        Thank you for your patience!
-    </p>
+    <p>We are currently under construction.  
+    You can explore the main MM Times website and logo/web services for now.</p>
 
     <div class="btn-container">
         <a href="https://mmtimes.in" class="btn">Visit Main Website</a>
         <a href="https://mmtimes.in/logo-web-solutions.html" class="btn">Logo & Web Services</a>
     </div>
 
-    <footer>
-        © 2025 MM Times | WebHub Under Construction
-    </footer>
+    <footer>© 2025 MM Times | WebHub Under Construction</footer>
+</div>
+
+<!-- THREE.JS EARTH -->
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Earth texture
+    const textureLoader = new THREE.TextureLoader();
+    const earthTexture = textureLoader.load("https://raw.githubusercontent.com/itsron717/earth-3d-threejs/master/images/earthmap1k.jpg");
+
+    const geometry = new THREE.SphereGeometry(2.8, 64, 64);
+    const material = new THREE.MeshStandardMaterial({ map: earthTexture });
+    const earth = new THREE.Mesh(geometry, material);
+    scene.add(earth);
+
+    // Lighting
+    const light = new THREE.PointLight(0xffffff, 1.5);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+    camera.position.z = 7;
+
+    // Animation
+    function animate() {
+        requestAnimationFrame(animate);
+        earth.rotation.y += 0.002;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle resizing
+    window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
 
 </body>
 </html>
